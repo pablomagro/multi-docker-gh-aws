@@ -18,21 +18,19 @@ jobs:
           docker build -t pmagas/react-test -f ./client/Dockerfile.dev ./client
           docker run -e CI=true pmagas/react-test npm run test-cov
 
-          for image in multi-client multi-nginx multi-server multi-worker
-          do
-            docker build -t pmagas/$image ./$image
-          done
-          # for service in client nginx server worker; do docker build -t pmagas/multi-$service ./$service; done
-
+          docker build -t pmagas/multi-client ./client
+          docker build -t pmagas/multi-nginx ./nginx
+          docker build -t pmagas/multi-server ./server
+          docker build -t pmagas/multi-worker ./worker
 
       - name: Login and push Docker images
         run: |
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-          for image in multi-client multi-nginx multi-server multi-worker
-          do
-            docker push pmagas/$image
-          done
+          docker push pmagas/multi-client
+          docker push pmagas/multi-nginx
+          docker push pmagas/multi-server
+          docker push pmagas/multi-worker
 
           docker logout
 
