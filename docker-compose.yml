@@ -1,11 +1,11 @@
 version: "3"
 services:
   client:
-    image: "pmagas/multi-client-10-14"
+    image: "pmagas/multi-client-19-49"
     mem_limit: 128m
     hostname: client
   server:
-    image: "pmagas/multi-server-10-14"
+    image: "pmagas/multi-server-19-49"
     mem_limit: 128m
     hostname: api
     environment:
@@ -17,14 +17,14 @@ services:
       - PGPASSWORD=$PGPASSWORD
       - PGPORT=$PGPORT
   worker:
-    image: "pmagas/multi-worker-10-14"
+    image: "pmagas/multi-worker-19-49"
     mem_limit: 128m
     hostname: worker
     environment:
       - REDIS_HOST=$REDIS_HOST
       - REDIS_PORT=$REDIS_PORT
   nginx:
-    image: "pmagas/multi-nginx-10-14"
+    image: "pmagas/multi-nginx-19-49"
     mem_limit: 128m
     hostname: nginx
     ports:

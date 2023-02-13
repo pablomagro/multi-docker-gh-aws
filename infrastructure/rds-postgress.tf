@@ -1,4 +1,4 @@
-resource "aws_db_instance" "portgress_fb" {
+resource "aws_db_instance" "portgres_fb" {
   identifier             = "multi-docker-postgres"
   db_name                = "fibvalues"
   engine                 = "postgres"

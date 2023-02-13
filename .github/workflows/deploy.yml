@@ -25,19 +25,19 @@ jobs:
           docker build -t pmagas/react-test -f ./client/Dockerfile.dev ./client
           docker run -e CI=true pmagas/react-test npm run test-cov
 
-          docker build -t pmagas/multi-client-10-14 ./client
-          docker build -t pmagas/multi-nginx-10-14 ./nginx
-          docker build -t pmagas/multi-server-10-14 ./server
-          docker build -t pmagas/multi-worker-10-14 ./worker
+          docker build -t pmagas/multi-client-19-49 ./client
+          docker build -t pmagas/multi-nginx-19-49 ./nginx
+          docker build -t pmagas/multi-server-19-49 ./server
+          docker build -t pmagas/multi-worker-19-49 ./worker
 
       - name: Login and push Docker images
         run: |
           echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-          docker push pmagas/multi-client-10-14
-          docker push pmagas/multi-nginx-10-14
-          docker push pmagas/multi-server-10-14
-          docker push pmagas/multi-worker-10-14
+          docker push pmagas/multi-client-19-49
+          docker push pmagas/multi-nginx-19-49
+          docker push pmagas/multi-server-19-49
+          docker push pmagas/multi-worker-19-49
 
           docker logout
 

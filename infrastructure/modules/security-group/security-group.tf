@@ -24,4 +24,3 @@ resource "aws_security_group" "multi-docker" {
 output "sg_id" {
   value = aws_security_group.multi-docker.id
 }
-# module.sgmodule.multi_docker_sg_id
