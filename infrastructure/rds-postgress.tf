@@ -12,6 +12,6 @@ resource "aws_db_instance" "portgress_fb" {
   allocated_storage      = 20
   max_allocated_storage  = 1000
   storage_type           = "gp2"
-  vpc_security_group_ids = ["sg-fb60ac8e"]
+  vpc_security_group_ids = [module.multi_docker_sg_module.sg_id]
   tags                   = {}
 }
