@@ -1,3 +1,7 @@
+variable "aws_region" {
+  type    = string
+  default = "ap-southeast-2"
+}
 variable "elasticapp" {
   default = "multi-docker-gh"
 }
@@ -13,7 +17,19 @@ variable "tier" {
 variable "instance_type" {
   type = string
 }
+variable "asg_minsize" {
+  type = number
+}
+variable "asg_maxsize" {
+  type = number
+}
 
 variable "vpc_id" {}
-variable "public_subnets" {}
+variable "vpc_default_security_group" {
+  type    = string
+  default = "sg-fb60ac8e"
+}
+variable "public_subnets" {
+  # type    = set(string)
+}
 variable "elb_public_subnets" {}

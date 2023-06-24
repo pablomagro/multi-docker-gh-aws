@@ -1,22 +1,24 @@
 resource "aws_elasticache_subnet_group" "main" {
   name       = "multi-docker-redis-group"
-  subnet_ids = ["subnet-4eca2c06", "subnet-b86792de", "subnet-3f0b6c67"]
+  # subnet_ids = join(",", var.public_subnets)
+  subnet_ids = var.public_subnets
 }
 
 resource "aws_elasticache_parameter_group" "main" {
-  name   = "default.redis7"
+  name   = "default-redis7"
   family = "redis7"
 }
 
 resource "aws_elasticache_cluster" "redis" {
-  cluster_id           = "multi-docker-redis-001"
+  depends_on           = [aws_security_group.multi_docker_gh]
+  cluster_id           = "multi-docker-redis"
   engine               = "redis"
   engine_version       = "7.0"
   node_type            = "cache.t2.micro"
   num_cache_nodes      = 1
   parameter_group_name = aws_elasticache_parameter_group.main.name
   port                 = 6379
-  security_group_ids   = [module.multi_docker_sg_module.sg_id]
+  security_group_ids   = [aws_security_group.multi_docker_gh.id]
   subnet_group_name    = aws_elasticache_subnet_group.main.name
 }
 
