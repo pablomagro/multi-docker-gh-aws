@@ -1,0 +1,44 @@
+apiVersion: skaffold/v2beta12
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./iac/k8s/client-deployment.yaml
+      - ./iac/k8s/server-deployment.yaml
+      - ./iac/k8s/worker-deployment.yaml
+      - ./iac/k8s/client-cluster-ip-service.yaml
+      - ./iac/k8s/server-cluster-ip-service.yaml
+build:
+  local:
+    push: false
+  artifacts:
+    - image: pmagas/client-skaffold
+      context: client
+      docker:
+        dockerfile: Dockerfile.dev
+      # Only update below files in the pod - container.
+      sync:
+        manual:
+          - src: "src/**/*.js"
+            dest: .
+          - src: "src/**/*.css"
+            dest: .
+          - src: "src/**/*.html"
+            dest: .
+    - image: pmagas/worker-skaffold
+      context: worker
+      docker:
+        dockerfile: Dockerfile.dev
+      # Only update below files in the pod - container.
+      sync:
+        manual:
+          - src: "*.js"
+            dest: .
+    - image: pmagas/server-skaffold
+      context: server
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: "*.js"
+            dest: .
