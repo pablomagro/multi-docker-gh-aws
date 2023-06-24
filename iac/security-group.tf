@@ -9,8 +9,6 @@ resource "aws_security_group" "multi_docker_gh" {
     protocol    = "tcp"
     cidr_blocks = []
     self        = "true"
-    # cidr_blocks      = [aws_vpc.main.cidr_block]
-    # ipv6_cidr_blocks = [aws_vpc.main.ipv6_cidr_block]
   }
 
   egress {

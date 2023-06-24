@@ -1,6 +1,5 @@
 resource "aws_elasticache_subnet_group" "main" {
   name       = "multi-docker-redis-group"
-  # subnet_ids = join(",", var.public_subnets)
   subnet_ids = var.public_subnets
 }
 

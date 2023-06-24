@@ -29,7 +29,5 @@ variable "vpc_default_security_group" {
   type    = string
   default = "sg-fb60ac8e"
 }
-variable "public_subnets" {
-  # type    = set(string)
-}
+variable "public_subnets" {}
 variable "elb_public_subnets" {}

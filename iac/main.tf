@@ -80,11 +80,6 @@ resource "aws_elastic_beanstalk_environment" "beanstalkappenv" {
     value     = join(",", [var.vpc_default_security_group, aws_security_group.multi_docker_gh.id])
     resource  = ""
   }
-  # setting {
-  #   namespace = "aws:cloudformation:template:parameter"
-  #   name      = "SysEnvironmentVariablestemType"
-  #   value     = "REDIS_HOST=${aws_elasticache_cluster.redis.cache_nodes[0]["address"]},PGHOST=postgres,REDIS_PORT=6379,PGUSER=postgres,PGPORT=5432,PGPASSWORD=postgrespassword,PGDATABASE=fibvalues"
-  # }
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "REDIS_HOST"
