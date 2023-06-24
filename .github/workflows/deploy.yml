@@ -4,6 +4,11 @@ on:
     branches:
       - master
       - feature/*
+    paths:
+      - client/**
+      - server/**
+      - nginx/**
+      - worker/**
 
 jobs:
   build-and-deploy:
