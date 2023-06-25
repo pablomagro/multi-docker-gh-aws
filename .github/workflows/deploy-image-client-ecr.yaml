@@ -46,8 +46,8 @@ jobs:
 
       - name: Generate Docker tag
         id: generate_tag
-        # run: echo "::set-output name=tag::$(git rev-parse --short HEAD)"
-        run: echo "tag=$(git rev-parse --short HEAD) >> $GITHUB_OUTPUT"
+        run: echo "::set-output name=tag::$(git rev-parse --short HEAD)"
+        # run: echo "tag=$(git rev-parse --short HEAD) >> $GITHUB_OUTPUT"
 
       - name: Set Docker tag as environment variable
         run: echo "DOCKER_TAG=${{ steps.generate_tag.outputs.tag }}" >> $GITHUB_ENV
