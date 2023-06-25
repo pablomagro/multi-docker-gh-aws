@@ -1,7 +1,6 @@
 name: Deploy Frontend Docker Image ECR
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - master
@@ -13,12 +12,12 @@ on:
   pull_request:
     branches:
       - master
-
     paths:
       - 'client/**'
       - .github/workflows/aws/eks/deploy-image-client-ecr.yml
       - iac/k8s/client-deployment.yaml
       - iac/k8s/client-cluster-ip-service.yaml
+    workflow_dispatch:
 
 env:
   AWS_ECR_REGISTRY: 605313441167.dkr.ecr.ap-southeast-2.amazonaws.com
