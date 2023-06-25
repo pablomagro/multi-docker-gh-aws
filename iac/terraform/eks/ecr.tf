@@ -14,3 +14,9 @@ resource "aws_ecr_repository" "exampleapp-client" {
   tags         = local.common_tags
   force_delete = "true"
 }
+
+resource "aws_ecr_repository" "exampleapp-worker" {
+  name         = "${local.common_tags.Project_Name}-worker"
+  tags         = local.common_tags
+  force_delete = "true"
+}

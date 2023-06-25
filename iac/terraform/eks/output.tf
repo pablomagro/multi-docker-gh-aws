@@ -47,3 +47,8 @@ output "server_repository_url" {
   description = "exampleapp-server repository URL"
   value       = aws_ecr_repository.exampleapp-server.repository_url
 }
+
+output "worker_repository_url" {
+  description = "exampleapp-worker repository URL"
+  value       = aws_ecr_repository.exampleapp-worker.repository_url
+}
