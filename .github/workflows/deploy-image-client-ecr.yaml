@@ -1,4 +1,4 @@
-name: Deploy Frontend Docker Image ECR
+name: Deploy Frontend Docker Image ECR - CI
 
 on:
   workflow_dispatch:
@@ -20,10 +20,10 @@ on:
       - iac/k8s/client-cluster-ip-service.yaml
 
 env:
-  AWS_ECR_REGISTRY: 605313441167.dkr.ecr.ap-southeast-2.amazonaws.com
+  AWS_ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
   AWS_ECR_REPOSITORY: exampleapp-client
   K8S_NAMESPACE: ${{ vars.K8S_NAMESPACE }}
-  # SHA: ${{ github.sha }}
+  SHA: ${{ github.sha }}
 
 jobs:
   build-client-docker-image:
@@ -44,19 +44,11 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@master
 
-      - name: Generate Docker tag
-        id: generate_tag
-        run: echo "::set-output name=tag::$(git rev-parse --short HEAD)"
-        # run: echo "tag=$(git rev-parse --short HEAD) >> $GITHUB_OUTPUT"
-
-      - name: Set Docker tag as environment variable
-        run: echo "DOCKER_TAG=${{ steps.generate_tag.outputs.tag }}" >> $GITHUB_ENV
-
       - name: Cache Docker layers
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ env.DOCKER_TAG }}
+          key: ${{ runner.os }}-buildx-${{ env.SHA }}
           restore-keys: |
             ${{ runner.os }}-buildx-
 
@@ -74,7 +66,7 @@ jobs:
           push: true
           tags: |
             ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:latest
-            ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{env.DOCKER_TAG}}
+            ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{env.SHA}}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
@@ -93,7 +85,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{env.DOCKER_TAG}}'
+          image-ref: '${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{env.SHA}}'
           format: 'table'
           exit-code: '0'
           ignore-unfixed: true
