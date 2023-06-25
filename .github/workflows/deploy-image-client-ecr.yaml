@@ -23,76 +23,87 @@ env:
   AWS_ECR_REGISTRY: 605313441167.dkr.ecr.ap-southeast-2.amazonaws.com
   AWS_ECR_REPOSITORY: exampleapp-client
   K8S_NAMESPACE: ${{ vars.K8S_NAMESPACE }}
-  SHA: $(git rev-parse HEAD)
+  # SHA: $(git rev-parse HEAD)
 
 jobs:
   build-client-docker-image:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      # if: github.ref == 'refs/heads/master'
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ vars.AWS_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        # if: github.ref == 'refs/heads/master'
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
 
-    - name: Set up Docker Buildx
-      id: buildx
-      uses: docker/setup-buildx-action@master
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@master
 
-    - name: Cache Docker layers
-      uses: actions/cache@v2
-      with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ env.SHA }}
-        restore-keys: |
-          ${{ runner.os }}-buildx-
+      - name: Generate Docker tag
+        id: generate_tag
+        run: echo "::set-output name=tag::$(git rev-parse --short HEAD)"
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+      - name: Set Docker tag as environment variable
+        run: echo "DOCKER_TAG=${{ steps.generate_tag.outputs.tag }}" >> $GITHUB_ENV
 
-    - name: Build Docker image
-      uses: docker/build-push-action@v2
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      with:
-        context: ./client
-        builder: ${{ steps.buildx.outputs.name }}
-        push: true
-        tags: |
-          ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:latest
-          ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{ env.SHA }}
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache-new
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ env.DOCKER_TAG }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
-    - name: Move cache
-      run: |
-        rm -rf /tmp/.buildx-cache
-        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-    # - name: Run Trivy vulnerability scanner
-    #   uses: aquasecurity/trivy-action@master
-    #   with:
-    #     image-ref: '${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{github.run_number}}'
-    #     format: 'table'
-    #     exit-code: '0'
-    #     ignore-unfixed: true
-    #     vuln-type: 'os,library'
-    #     severity: 'HIGH,CRITICAL'
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          SHA: $(git rev-parse HEAD)
+          REGISTRY: ghcr.io
+          IMAGE_NAME: ${{ github.repository }}
+          CHECKING: ${{ steps.meta.outputs.tags }}
+        with:
+          context: ./client
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          tags: |
+            ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:latest
+            ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{env.DOCKER_TAG}}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-    - name: Restart the deployment
-      uses: Consensys/kubernetes-action@master
-      env:
-        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-      with:
-        args: rollout restart deployment.apps/${{ secrets.APPLICATION_NAME }}-client -n ${{ env.K8S_NAMESPACE }}
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-    - uses: tale/kubectl-action@v1
-      with:
-        base64-kube-config: ${{ secrets.KUBE_CONFIG_DATA }}
-    - run: kubectl get pods
+      - name: Restart the deployment
+        uses: Consensys/kubernetes-action@master
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: rollout restart deployment.apps/${{ secrets.APPLICATION_NAME }}-client -n ${{ env.K8S_NAMESPACE }}
+
+      # - name: Run Trivy vulnerability scanner
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: '${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{github.run_number}}'
+      #     format: 'table'
+      #     exit-code: '0'
+      #     ignore-unfixed: true
+      #     vuln-type: 'os,library'
+      #     severity: 'HIGH,CRITICAL'
+
+      - uses: tale/kubectl-action@v1
+        with:
+          base64-kube-config: ${{ secrets.KUBE_CONFIG_DATA }}
+      - run: kubectl get pods
