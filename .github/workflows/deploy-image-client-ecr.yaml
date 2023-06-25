@@ -40,48 +40,48 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@master
+      # - name: Set up Docker Buildx
+      #   id: buildx
+      #   uses: docker/setup-buildx-action@master
 
-      - name: Generate Docker tag
-        id: generate_tag
-        run: echo "::set-output name=tag::$(git rev-parse --short HEAD)"
-        # run: echo "tag=$(git rev-parse --short HEAD) >> $GITHUB_OUTPUT"
+      # - name: Generate Docker tag
+      #   id: generate_tag
+      #   run: echo "::set-output name=tag::$(git rev-parse --short HEAD)"
+      #   # run: echo "tag=$(git rev-parse --short HEAD) >> $GITHUB_OUTPUT"
 
-      - name: Set Docker tag as environment variable
-        run: echo "DOCKER_TAG=${{ steps.generate_tag.outputs.tag }}" >> $GITHUB_ENV
+      # - name: Set Docker tag as environment variable
+      #   run: echo "DOCKER_TAG=${{ steps.generate_tag.outputs.tag }}" >> $GITHUB_ENV
 
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ env.DOCKER_TAG }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
+      # - name: Cache Docker layers
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: /tmp/.buildx-cache
+      #     key: ${{ runner.os }}-buildx-${{ env.DOCKER_TAG }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-buildx-
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build Docker image
-        uses: docker/build-push-action@v2
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        with:
-          context: ./client
-          builder: ${{ steps.buildx.outputs.name }}
-          push: true
-          tags: |
-            ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:latest
-            ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{env.DOCKER_TAG}}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
+      # - name: Build Docker image
+      #   uses: docker/build-push-action@v2
+      #   env:
+      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #   with:
+      #     context: ./client
+      #     builder: ${{ steps.buildx.outputs.name }}
+      #     push: true
+      #     tags: |
+      #       ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:latest
+      #       ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{env.DOCKER_TAG}}
+      #     cache-from: type=local,src=/tmp/.buildx-cache
+      #     cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+      # - name: Move cache
+      #   run: |
+      #     rm -rf /tmp/.buildx-cache
+      #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       # - name: Restart the deployment
       #   uses: Consensys/kubernetes-action@master
@@ -101,10 +101,8 @@ jobs:
       #     severity: 'HIGH,CRITICAL'
 
       # TODO
-      # error: exec plugin: invalid apiVersion "client.authentication.k8s.io/v1alpha1"
       - uses: tale/kubectl-action@v1
         with:
           base64-kube-config: ${{ secrets.KUBE_CONFIG }}
           # base64-kube-config: ${{ secrets.KUBE_CONFIG_DATA }}
-          # kubectl-version: v1.22.0
       - run: kubectl get pods -n ${{ env.K8S_NAMESPACE }}
