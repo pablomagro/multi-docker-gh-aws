@@ -22,7 +22,7 @@ on:
 env:
   AWS_ECR_REGISTRY: 605313441167.dkr.ecr.ap-southeast-2.amazonaws.com
   AWS_ECR_REPOSITORY: exampleapp-client
-  K8S_NAMESPACE: ${{ vars.AWS_REGION }}
+  K8S_NAMESPACE: ${{ vars.K8S_NAMESPACE }}
   SHA: $(git rev-parse HEAD)
 
 jobs:
