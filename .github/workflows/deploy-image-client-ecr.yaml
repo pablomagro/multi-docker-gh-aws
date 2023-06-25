@@ -90,6 +90,7 @@ jobs:
       #   with:
       #     args: rollout restart deployment.apps/${{ secrets.APPLICATION_NAME }}-client -n ${{ env.K8S_NAMESPACE }}
 
+      # TODO
       # - name: Run Trivy vulnerability scanner
       #   uses: aquasecurity/trivy-action@master
       #   with:
@@ -100,7 +101,9 @@ jobs:
       #     vuln-type: 'os,library'
       #     severity: 'HIGH,CRITICAL'
 
-      - uses: tale/kubectl-action@v1
-        with:
-          base64-kube-config: ${{ secrets.KUBE_CONFIG_DATA }}
-      - run: kubectl get pods -n ${{ env.K8S_NAMESPACE }}
+      # TODO
+      # - uses: tale/kubectl-action@v1
+      #   with:
+      #     base64-kube-config: ${{ secrets.KUBE_CONFIG_DATA }}
+      # - run: kubectl get pods -n ${{ env.K8S_NAMESPACE }}
+      # error: exec plugin: invalid apiVersion "client.authentication.k8s.io/v1alpha1"
