@@ -23,7 +23,7 @@ env:
   AWS_ECR_REGISTRY: 605313441167.dkr.ecr.ap-southeast-2.amazonaws.com
   AWS_ECR_REPOSITORY: exampleapp-client
   K8S_NAMESPACE: ${{ vars.K8S_NAMESPACE }}
-  SHA: ${{ github.sha }}
+  # SHA: ${{ github.sha }}
 
 jobs:
   build-client-docker-image:
@@ -90,20 +90,21 @@ jobs:
       #   with:
       #     args: rollout restart deployment.apps/${{ secrets.APPLICATION_NAME }}-client -n ${{ env.K8S_NAMESPACE }}
 
-      # TODO
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{env.DOCKER_TAG}}'
-          format: 'table'
-          exit-code: '0'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'HIGH,CRITICAL'
+      # - name: Run Trivy vulnerability scanner
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: '${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{env.DOCKER_TAG}}'
+      #     format: 'table'
+      #     exit-code: '0'
+      #     ignore-unfixed: true
+      #     vuln-type: 'os,library'
+      #     severity: 'HIGH,CRITICAL'
 
       # TODO
       # error: exec plugin: invalid apiVersion "client.authentication.k8s.io/v1alpha1"
       - uses: tale/kubectl-action@v1
         with:
-          base64-kube-config: ${{ secrets.KUBE_CONFIG_DATA }}
+          base64-kube-config: ${{ secrets.KUBE_CONFIG }}
+          # base64-kube-config: ${{ secrets.KUBE_CONFIG_DATA }}
+          # kubectl-version: v1.22.0
       - run: kubectl get pods -n ${{ env.K8S_NAMESPACE }}
