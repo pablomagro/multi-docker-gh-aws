@@ -28,13 +28,13 @@ jobs:
     - name: Build server Docker image
       working-directory: server
       run: |
-        docker build . --file Dockerfile --tag ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{SHA}}
-        docker tag ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{SHA}} ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:latest
+        docker build . --file Dockerfile --tag ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{env.SHA}}
+        docker tag ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{env.SHA}} ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:latest
 
     # - name: Run Trivy vulnerability scanner
     #   uses: aquasecurity/trivy-action@master
     #   with:
-    #     image-ref: '${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{SHA}}'
+    #     image-ref: '${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{env.SHA}}'
     #     format: 'table'
     #     exit-code: '0'
     #     ignore-unfixed: true
@@ -56,5 +56,5 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run: |
-        docker push ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{SHA}}
+        docker push ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:${{env.SHA}}
         docker push ${{env.AWS_ECR_REGISTRY}}/${{env.AWS_ECR_REPOSITORY}}:latest
