@@ -3,12 +3,8 @@ name: Deploy Worker Docker Image ECR - CI
 on:
   workflow_dispatch:
   push:
-    branches: ["master" ]
-    paths:
-      - worker/**
-      - .github/workflows/docker-image-worker-ecr.yml
   pull_request:
-    branches: ["master"]
+    branches: ["master" ]
     paths:
       - worker/**
       - .github/workflows/docker-image-worker-ecr.yml

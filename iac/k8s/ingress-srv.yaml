@@ -11,13 +11,15 @@ spec:
     - http:
         paths:
           - path: /?(.*)
+          # - path: /
             pathType: Prefix
-            frontend:
+            backend:
               service:
                 name: client-cluster-ip-service
                 port:
                   number: 3000
           - path: /api/?(.*)
+          # - path: /api
             pathType: Prefix
             backend:
               service:

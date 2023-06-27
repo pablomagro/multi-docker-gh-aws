@@ -3,13 +3,6 @@ name: Deploy Frontend Docker Image ECR - CI
 on:
   workflow_dispatch:
   push:
-    branches:
-      - master
-    paths:
-      - 'client/**'
-      - .github/workflows/aws/eks/deploy-image-client-ecr.yml
-      - iac/k8s/client-deployment.yaml
-      - iac/k8s/client-cluster-ip-service.yaml
   pull_request:
     branches:
       - master
@@ -92,7 +85,7 @@ jobs:
           vuln-type: 'os,library'
           severity: 'HIGH,CRITICAL'
 
-      - uses: tale/kubectl-action@v1
-        with:
-          base64-kube-config: ${{ secrets.KUBE_CONFIG }}
-      - run: kubectl get pods -n ${{ env.K8S_NAMESPACE }}
+      # - uses: tale/kubectl-action@v1
+      #   with:
+      #     base64-kube-config: ${{ secrets.KUBE_CONFIG }}
+      # - run: kubectl get pods -n ${{ env.K8S_NAMESPACE }}

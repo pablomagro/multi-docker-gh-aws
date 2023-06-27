@@ -3,20 +3,15 @@ kind: Config
 deploy:
   kubectl:
     manifests:
-      - ./iac/k8s/client-deployment.yaml
-      - ./iac/k8s/server-deployment.yaml
-      - ./iac/k8s/worker-deployment.yaml
-      - ./iac/k8s/client-cluster-ip-service.yaml
-      - ./iac/k8s/server-cluster-ip-service.yaml
+      - ./iac/k8s/*
 build:
   local:
     push: false
   artifacts:
-    - image: pmagas/client-skaffold
+    - image: pmagas/client-fib
       context: client
       docker:
         dockerfile: Dockerfile.dev
-      # Only update below files in the pod - container.
       sync:
         manual:
           - src: "src/**/*.js"
@@ -25,16 +20,15 @@ build:
             dest: .
           - src: "src/**/*.html"
             dest: .
-    - image: pmagas/worker-skaffold
+    - image: pmagas/worker-fib
       context: worker
       docker:
         dockerfile: Dockerfile.dev
-      # Only update below files in the pod - container.
       sync:
         manual:
           - src: "*.js"
             dest: .
-    - image: pmagas/server-skaffold
+    - image: pmagas/server-fib
       context: server
       docker:
         dockerfile: Dockerfile.dev

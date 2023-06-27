@@ -3,6 +3,10 @@
 # Version: 1.0.0
 # ------------------------------------------------------------------------------
 
+# ENI max pods
+# https://github.com/awslabs/amazon-eks-ami/blob/master/files/eni-max-pods.txt
+# t2.small: 11 pods
+
 ## AWS account data
 # aws_region = "ap-southeast-2"
 # aws_cli_profile = "terraform-deploy"
@@ -26,8 +30,8 @@ private_hosted_zone_domain = "exampleapp.int"
 
 kubernetes_version    = "1.25"
 cluster_irsa          = true
-server_instance_type  = "t2.micro"
-client_instance_type  = "t2.micro"
+server_instance_type  = "t2.small"
+client_instance_type  = "t2.small"
 application_namespace = "applications"
 eks_userarn           = "arn:aws:iam::605313441167:user/terraform-deploy-nz"
 eks_username          = "terraform-deploy-nz"

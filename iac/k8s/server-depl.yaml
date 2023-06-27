@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: server-deployment
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       component: server
@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: server
-          # image: pmagas/server-skaffold
-          image: 605313441167.dkr.ecr.ap-southeast-2.amazonaws.com/exampleapp-server
+          image: pmagas/server-fib
+          # image: 605313441167.dkr.ecr.ap-southeast-2.amazonaws.com/exampleapp-server
           ports:
             - containerPort: 5000
           env:
@@ -36,3 +36,15 @@ spec:
                 secretKeyRef:
                   name: pgpassword
                   key: PGPASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server-cluster-ip-service
+spec:
+  type: ClusterIP
+  selector:
+    component: server
+  ports:
+    - port: 5000
+      targetPort: 5000
