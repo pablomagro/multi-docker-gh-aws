@@ -1,13 +1,13 @@
 #!/bin/bash
 
-CLUSTER_NAME="747590-eks-exampleapp-production"
-AWS_REGION="ap-southeast-2" # eg: "ap-southeast-2"
+CLUSTER_NAME=""
+AWS_REGION="" # eg: "ap-southeast-2"
 
 # Update or generate the kubeconfig
 # export AWS_PROFILE=k8s-deployer
 
 # Check IAM entity
-aws sts get-caller-identity
+# aws sts get-caller-identity
 
 aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
 
@@ -18,7 +18,6 @@ aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
 # cat $HOME/.kube/config | base64 | xclip -selection clipboard
 
 # Update the value of the KUBECONFIG variable in GitHub with the new kubeconfig file.
-gh secret set KUBE_CONFIG_DATA --body "$(cat $HOME/.kube/config | base64)"
 gh secret set KUBE_CONFIG --body "$(cat $HOME/.kube/config | base64)"
 
 # To confirm that the kubeconfig file is updated

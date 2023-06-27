@@ -82,6 +82,33 @@ NAME                                 TYPE           CLUSTER-IP       EXTERNAL-IP
 ingress-nginx-controller             LoadBalancer   10.100.20.84     a4217761afdb3457683821e38a3d3de7-XXXXXXXXX.us-east-2.elb.amazonaws.com   80:31105/TCP,443:31746/TCP   3d18h
 ```
 
+## Deployments
+A [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) provides declarative updates for Pods and ReplicaSets.
+
+```yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+```
+
 # Kubectl
 
 You can switch from local (minikube) to gcloud and back with:
@@ -100,8 +127,38 @@ kubectl config get-contexts
 Don't forget create secrets in the cluster.
 ```
 kubectl create secret generic pgpassword --from-literal PGPASSWORD=12345test -n context-name
-
 ```
+
+# Minikube
+run the below command to enable the metrics-server addon. This step ensures metrics collection for your cluster and deployments.
+
+    minikube addons enable metrics-server
+
+# Pulses
+[K9S](https://k9scli.io/) has a handy cluster-wide dashboard feature called Pulses, which shows you charts and statistics for deployments, events, pods, etc. Follow the steps in the following paragraphs to know how to monitor your cluster with Pulses.
+
+## [Commands](https://k9scli.io/topics/commands/)
+K9s CLI comes with a view arguments that you can use to launch the tool with different configuration.
+
+```bash
+# List all available CLI options
+k9s help
+# Get info about K9s runtime (logs, configs, etc..)
+k9s info
+# Run K9s in a given namespace.
+k9s -n mycoolns
+# Run K9s and launch in pod view via the pod command.
+k9s -c pod
+# Start K9s in a non default KubeConfig context
+k9s --context coolCtx
+# Start K9s in readonly mode - with all modification commands disabled
+k9s --readonly
+```
+
+TODO: Check xray https://adamtheautomator.com/k9s-kubernetes/
+
+nslookup
+dig
 
 # Doc
 [https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elastic_beanstalk_environment#example-with-options](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/elastic_beanstalk_environment#example-with-options)

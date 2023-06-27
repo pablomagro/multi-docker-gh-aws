@@ -4,19 +4,21 @@ metadata:
   name: client-deployment
 spec:
   replicas: 1
+  # Define how the deployment can find which pods to manage
   selector:
     matchLabels:
       component: web
   template:
     metadata:
       labels:
-        component: web
+        component: web # Same as above label.
     spec:
       containers:
         - name: client
           # image: pmagas/client-fib
           image: 605313441167.dkr.ecr.ap-southeast-2.amazonaws.com/exampleapp-client
           ports:
+          # Port that the conatainer will expose to the network (optional).
             - containerPort: 3000
 ---
 apiVersion: v1
