@@ -72,7 +72,7 @@ jobs:
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         with:
-          args: rollout restart deployment.apps/${{ secrets.APPLICATION_NAME }}-client -n ${{ env.K8S_NAMESPACE }}
+          args: rollout restart deployment.apps/client-deployment -n ${{ env.K8S_NAMESPACE }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
