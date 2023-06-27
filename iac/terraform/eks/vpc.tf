@@ -9,8 +9,9 @@ module "vpc" {
 
   // Basic configuration
   name                     = "${local.common_tags.Project_Name}-vpc"
-  cidr                     = var.network_address_space // "172.16.0.0/16"
+  cidr                     = var.network_address_space
   azs                      = [var.availablity_zone_a, var.availablity_zone_b]
+  # azs                      = data.aws_availability_zones.available.names
   enable_dns_hostnames     = true
   enable_nat_gateway       = true
   single_nat_gateway       = true

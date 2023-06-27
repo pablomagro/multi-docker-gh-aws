@@ -11,6 +11,7 @@
 ```
 
 # Terraform
+Ideal for productions environments. But there's another reason why you should pick Terraform, and that's `incremental updates`.
 
 ## Remove a resource from terraform state
 
@@ -96,8 +97,10 @@ kubectl config get-contexts
 ```
 
 ## Secrets
+Don't forget create secrets in the cluster.
 ```
 kubectl create secret generic pgpassword --from-literal PGPASSWORD=12345test -n context-name
+
 ```
 
 # Doc
