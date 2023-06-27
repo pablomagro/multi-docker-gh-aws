@@ -35,6 +35,13 @@ Trivy is a comprehensive and versatile security scanner. Trivy has scanners that
 The Skaffold syntax reference can be found here
 [https://skaffold.dev/docs/references/yaml/](https://skaffold.dev/docs/references/yaml/)
 
+## Cleanup
+To enable image pruning, you can run Skaffold with both --no-prune=false and --cache-artifacts=false:
+
+```bash
+skaffold dev --no-prune=false --cache-artifacts=false
+```
+
 # K8s
 
 ## Setup NGINX Ingress Controller with Cert-Manager on AWS EKS

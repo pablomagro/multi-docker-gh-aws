@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: server
-          image: pmagas/server-fib
-          # image: 605313441167.dkr.ecr.ap-southeast-2.amazonaws.com/exampleapp-server
+          # image: pmagas/server-fib
+          image: 605313441167.dkr.ecr.ap-southeast-2.amazonaws.com/exampleapp-server
           ports:
             - containerPort: 5000
           env:

@@ -88,11 +88,11 @@ jobs:
     - name: Restart the deployment
       uses: Consensys/kubernetes-action@master
       env:
-        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
       with:
         args: rollout restart deployment.apps/${{ secrets.APPLICATION_NAME }}-client -n ${{ env.K8S_NAMESPACE }}
 
     - uses: tale/kubectl-action@v1
       with:
-        base64-kube-config: ${{ secrets.KUBE_CONFIG_DATA }}
+        base64-kube-config: ${{ secrets.KUBE_CONFIG }}
     - run: kubectl get pods

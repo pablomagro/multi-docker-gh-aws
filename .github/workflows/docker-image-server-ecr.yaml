@@ -3,19 +3,12 @@ name: Deploy Backend Docker Image ECR - CI
 on:
   workflow_dispatch:
   push:
+  pull_request:
     branches: ["master" ]
     paths:
       - server/**
       - .github/workflows/docker-image-server-ecr.yml
-      - iac/k8s/server-deployment.yaml
-      - iac/k8s/server-cluster-ip-service.yaml
-  pull_request:
-    branches: ["master"]
-    paths:
-      - server/**
-      - .github/workflows/docker-image-server-ecr.yml
-      - iac/k8s/server-deployment.yaml
-      - iac/k8s/server-cluster-ip-service.yaml
+      - iac/k8s/server-depl.yaml
 
 env:
   AWS_ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}

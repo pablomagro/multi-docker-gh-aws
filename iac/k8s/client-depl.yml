@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: client
-          image: pmagas/client-fib
-          # image: 605313441167.dkr.ecr.ap-southeast-2.amazonaws.com/exampleapp-client
+          # image: pmagas/client-fib
+          image: 605313441167.dkr.ecr.ap-southeast-2.amazonaws.com/exampleapp-client
           ports:
             - containerPort: 3000
 ---

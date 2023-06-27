@@ -8,6 +8,7 @@ on:
     paths:
       - worker/**
       - .github/workflows/docker-image-worker-ecr.yml
+      - iac/k8s/worker-depl.yaml
 
 env:
   AWS_ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}

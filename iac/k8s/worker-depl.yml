@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: worker
-          image: pmagas/worker-fib
-          # image: 605313441167.dkr.ecr.ap-southeast-2.amazonaws.com/exampleapp-worker
+          # image: pmagas/worker-fib
+          image: 605313441167.dkr.ecr.ap-southeast-2.amazonaws.com/exampleapp-worker
           env:
             - name: REDIS_HOST
               value: redis-cluster-ip-service
